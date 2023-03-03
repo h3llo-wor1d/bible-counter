@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<head>
+    <title>Does It Appear In The Bible?</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="words.css" />
+    <script src="bible.js"></script>
+    <script>
+
+        function handleText() {
+            let value = document.getElementById("textArea").value
+            if (value === "") {
+                document.getElementById("doesItAppear").innerHTML = ""
+            }
+        }
+        function doesAppear() {
+            document.getElementById("doesItAppear").innerHTML = ""
+            bible = window.bible;
+            let value = document.getElementById("textArea").value.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").replace(/\s{2,}/g," ");
+            let bibleWords = Object.keys(bible);
+            console.log(bibleWords)
+            let i = 0;
+            for (var item of value.split(" ")) {
+                if (bibleWords.indexOf(item.toLowerCase()) !== -1) {
+                    i++;
+                    var el = document.createElement('div');
+                    el.className="wordContainer"
+                    el.style.backgroundColor = `lime`
+                    el.innerHTML = `
+                <div class="wordContainer">
+                    <div class="wordInside">
+                        ${item}<br/>
+                        <p>Appears: ${bible[item.toLowerCase()].total} times</p>
+                    </div>
+                </div>`
+                    document.getElementById("doesItAppear").appendChild(el)
+                } 
+                else {
+                    var el = document.createElement('div');
+                    el.className="wordContainer"
+                    el.style.backgroundColor = `red`
+                    el.innerHTML = `
+                <div class="wordContainer">
+                    <div class="wordInside">
+                        ${item}<br/>
+                        <p>Appears: 0 times</p>
+                    </div>
+                </div>`
+                document.getElementById("doesItAppear").appendChild(el)
+                }
+            }
+            document.getElementById("stats").innerHTML = `
+Around ${Math.floor((i / value.split(" ").length) * 100)}% of these words show up in the bible!
+`
+        }
+    </script>
+</head>
+<body>
+    <div class="bodyContent">
+        Does it appear in the bible?<br/>
+        A goofy project by <a href="https://twitter.com/h31lo_wor1d">Wrench</a><br/><br/>
+        
+        Input Phrase<br>
+        <div class="uiContainer">
+            <textarea oninput="handleText()" id="textArea" cols="40" rows="5" style="resize: none; width: 400px; height: 50px; display: inline-block;"></textarea>
+        <button onclick="doesAppear()">Search!</button>
+        </div>
+        
+        <br/>
+        <div id="stats"></div>
+        <br/><br/>
+        <div id="doesItAppear" class="doesWordAppear" />
+    </div>
+</body>
+</html>

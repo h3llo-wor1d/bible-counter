@@ -1,0 +1,17 @@
+.wordContainer {
+    width: fit-content;
+    height: 70px;
+    position: relative;
+}
+
+.wordInside {
+    padding-left: 30px;
+    padding-right: 30px;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.wordInside p {
+    font-size: 15px;
+}

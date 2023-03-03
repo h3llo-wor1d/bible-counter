@@ -1,0 +1,81 @@
+@font-face {
+    font-family: "main";
+    src: url("ProggyClean.ttf");
+}
+
+body {
+    background-color: #121212;
+    color: #ffffff;
+    margin: 0;
+    font-family: "main";
+    font-size: 20pt;
+}
+
+.bodyContent {
+    width: fit-content;
+    height: fit-content;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.doesWordAppear {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 30px;
+    width: 700px;
+    height: 300px;
+}
+
+.uiContainer {
+    display: flex;
+    flex-direction: row;
+    column-gap: 10px;
+    
+}
+
+
+
+@media only screen and (max-width: 700px) {
+    .doesWordAppear {
+        border: 2px solid white;
+        width: calc(100vw - 60px);
+        height: 300px;
+    }
+
+    .uiContainer {
+        display: flex;
+        flex-direction: row;
+        column-gap: 10px;
+        max-width: calc(100vw - 60px);
+    }
+}
+
+.doesWordAppear {
+    
+}
+
+.uiContainer {
+    display: flex;
+    flex-direction: row;
+    column-gap: 10px;
+}
+
+input {
+    height: 50px;
+    width: 400px;
+}
+
+button {
+    width: 200px;
+    height: 55px;
+}
+
+.statCircle {
+    width: 15px;
+    height: 15px;
+    border-radius: 15px;
+    background-color: white;
+}
