@@ -4,6 +4,7 @@
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="words.css" />
     <script src="bible.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script>
 
         function handleText() {
@@ -48,9 +49,10 @@
                 document.getElementById("doesItAppear").appendChild(el)
                 }
             }
-            document.getElementById("stats").innerHTML = `
-Around ${Math.floor((i / value.split(" ").length) * 100)}% of these words show up in the bible!
-`
+            document.getElementById("stats").innerHTML = i === 0 ? 
+            "No word(s) or Phrase(s) found" : 
+            `Around ${Math.floor((i / value.split(" ").length) * 100)}% of these words show up in the bible!`
+
         }
     </script>
 </head>
