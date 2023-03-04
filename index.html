@@ -3,133 +3,100 @@
     <title>Does It Appear In The Bible?</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="words.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.2.1/chart.min.js" integrity="sha512-v3ygConQmvH0QehvQa6gSvTE2VdBZ6wkLOlmK7Mcy2mZ0ZF9saNbbk19QeaoTHdWIEiTlWmrwAL4hS8ElnGFbA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="nav.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script src="verses.js"></script>
+    <script src="scripts/nav.js"></script>
+    <script src="scripts/gen.js"></script>
+    <script src="scripts/utils.js"></script>
+    <script src="scripts/stat.js"></script>
     <script src="bible.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script>
         
         const bible = window.bible;
 
-        function handleText() {
-            let value = document.getElementById("textArea").value
-            if (value === "") {
-                document.getElementById("doesItAppear").innerHTML = ""
-            }
-        }
-
-        function calcValue(o, n){
-            var keys = Object.keys(o);
-            keys.sort(function(a,b){
-                return o[b] - o[a];
-            })
-            let sliced = keys.slice(0,n);
-            let out = [];
-            for (var val of sliced) {
-                out.push([val, o[val]]);
-            }
-            return out;
-        }
-
-        function calculateShows(word) {
-            try {
-                let dens = bible[word.toLowerCase()].density;
-                let calc = calcValue(dens, 3);
-                return calc;
-            } catch {
-                return null;
-            }
-        }
-
-        function getHighest(obj) {
-            return obj[Object.keys(obj).reduce(function(a, b){ return obj[a].total > obj[b].total ? a : b })].total;
-        }
-
-        function round(num, places) {
-            var multiplier = Math.pow(10, places);
-            return Math.round(num * multiplier) / multiplier;
-        }
-        
-        const showInline = (shows) => {
-            let out = ""
-            for (var show of shows) {
-                out += (`<span>${show[0]} - appears ${show[1]} times.</span><br>`);
-            }
-            return out;
-        }
-
         const maxValue = getHighest(bible);
 
-        function doesAppear() {
+        window.currentStat = {};
+
+        function tryGetLast() {
+            let last = localStorage.getItem("lastSetPhrase");
+            if (last) {
+                doesAppear(last);
+                document.getElementById("textArea").value = last;
+            }
+        }
+
+        function doesAppear(valSet=document.getElementById("textArea").value) {
             document.getElementById("doesItAppear").innerHTML = ""
-            let value = document.getElementById("textArea").value.replace(/[.,\/#!$%\^&\*;{}=_`~()]/g,"").replace(/\s{2,}/g," ");
+            let value = valSet.replace(/[.,\/#!$%\^&\*;{}=_`~()]/g,"").replace(/\s{2,}/g," ");
+            localStorage.setItem("lastSetPhrase", valSet);
             let bibleWords = Object.keys(bible);
             let i = 0;
             for (var item of value.split(" ")) {
-                if (bibleWords.indexOf(item.toLowerCase()) !== -1) {
-                    i++;
-                    var el = document.createElement('div');
-                    el.className="wordContainer"
-                    el.style.backgroundColor = `lime`
-                    let shows = calculateShows(item);
-                    let density = (bible[item.toLowerCase()].total / maxValue) * 100;
-                    el.innerHTML = `
-                <div class="wordContainer tooltip">
-                    <span class="tooltiptext">
-                        Most prominent verses:<br>
-                        ${
-                            showInline(shows)
-                        }
-                        <br>
-                        <p style="font-size: 11pt; margin-top: 0px;">
-                            This word has a density of ${density === 100 ? "100%, making it the most dense word in the bible!" : `${density}%`}
-                        </p>
-                    </span>
-                    <div class="wordInside tooltip">
-                        ${item}<br/>
-                        <p>Appears: ${bible[item.toLowerCase()].total} times</p>
-                    </div>
-                </div>`
-                    document.getElementById("doesItAppear").appendChild(el)
-                    
-                } 
-                else {
-                    var el = document.createElement('div');
-                    el.className="wordContainer"
-                    el.style.backgroundColor = `red`
-                    el.innerHTML = `
+                var el = document.createElement('div');
+                el.className="wordContainer"
+                el.style.backgroundColor = `red`;
+                el.innerHTML = `
                 <div class="wordContainer">
                     <div class="wordInside">
                         ${item}<br/>
                         <p>Appears: 0 times</p>
                     </div>
-                </div>`
-                document.getElementById("doesItAppear").appendChild(el)
+                </div>
+                ` 
+                let shows = calculateShows(item);
+                if (bibleWords.indexOf(item.toLowerCase()) !== -1) {
+                    i++;
+                    let density = (bible[item.toLowerCase()].total / maxValue) * 100;
+                    el.style.backgroundColor = interpolateBetweenColors({r: 42, g: 81, b: 21}, {r: 0, g: 255, b: 0}, density);
+                    el.innerHTML = createBlock(shows, density, item);
                 }
-            }
-            document.getElementById("stats").innerHTML = i === 0 ? 
-            "No specified word(s) or phrase(s) found in the bible" : 
-            `${Math.floor((i / value.split(" ").length) * 100)}% of these words show up in the bible!
-<p style="font-size: 14pt; margin-top: 0px;">(Which take up around ${(i / bibleWords.length) * 100}% of the entire bible)</p>    
-            `
 
+                setTimeout(() => calcStats(shows));
+                document.getElementById("doesItAppear").appendChild(el)
+                document.getElementById("stats").innerHTML = i === 0 ? 
+                "No specified word(s) or phrase(s) found in the bible" : 
+                `
+                ${Math.floor((i / value.split(" ").length) * 100)}% of these words show up in the bible!
+                <p style="font-size: 14pt; margin-top: 0px;">(Which take up around ${(i / bibleWords.length) * 100}% of the entire bible)</p>    
+                `
+            }
         }
     </script>
 </head>
-<body>
+<body onload="tryGetLast()">
     <div class="bodyContent noselect">
         Does it appear in the bible?<br/>
         A goofy project by <a href="https://twitter.com/h31lo_wor1d">Wrench</a><br/><br/>
         
-        Input Phrase<br>
-        <div class="uiContainer">
-            <textarea oninput="handleText()" id="textArea" cols="40" rows="5" style="resize: none; width: 400px; height: 50px; display: inline-block;"></textarea>
-        <button onclick="doesAppear()">Search!</button>
+        <span class="visible" id="page1">
+            Input Phrase<br>
+            <div class="uiContainer">
+                <textarea oninput="handleText()" id="textArea" cols="40" rows="5" style="resize: none; width: 400px; height: 50px; display: inline-block;"></textarea>
+            <button onclick="doesAppear()">Search!</button>
+            </div>
+            
+            <br/>
+            <div id="stats"></div>
+            <br/>
+            <div id="doesItAppear" class="doesWordAppear"></div>
+        </span>
+        <span class="invisible" id="page2">
+            <div class="pageContainer">
+                Coming soon...
+                <!--<canvas id="charts" style="width:100%;max-width:600px"></canvas>-->
+            </div>
+            
+        </span>
+    </div>
+    <div class="nav noselect">
+        <div class="navText">
+            <span class="nactive" onclick="handleNav(this, 'words')">View Words</span>
+            <span class="nb" onclick="handleNav(this, 'stat')">View Stats</span> 
+            <span class="nb" onclick="handleNav(this, 'github')">View Source On GitHub</span>
         </div>
-        
-        <br/>
-        <div id="stats"></div>
-        <br/>
-        <div id="doesItAppear" class="doesWordAppear" />
     </div>
 </body>
 </html>

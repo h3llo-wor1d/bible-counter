@@ -1,0 +1,30 @@
+.nav {
+    background-color: #333;
+    overflow: hidden;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: -9;
+}
+
+.navText {
+    padding: 10px 10px 10px 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    column-gap: 20px;
+
+}
+
+.nb {
+    color: white;
+    z-index: 999;
+}
+
+.nactive {
+    color: grey;
+}
+
+.nb:hover {
+    border-bottom: 2px white solid;
+}
