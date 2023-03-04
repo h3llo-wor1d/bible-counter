@@ -77,7 +77,7 @@ button {
     margin-top: -120px;  
     visibility: hidden;
     width: 300px;
-    height: 100px; 
+    min-height: 100px; 
     background-color: black;
     color: #fff;
     text-align: left;

@@ -40,6 +40,10 @@
             }
         }
 
+        function getHighest(obj) {
+            return obj[Object.keys(obj).reduce(function(a, b){ return obj[a].total > obj[b].total ? a : b })].total;
+        }
+
         function round(num, places) {
             var multiplier = Math.pow(10, places);
             return Math.round(num * multiplier) / multiplier;
@@ -53,6 +57,8 @@
             return out;
         }
 
+        const maxValue = getHighest(bible);
+
         function doesAppear() {
             document.getElementById("doesItAppear").innerHTML = ""
             let value = document.getElementById("textArea").value.replace(/[.,\/#!$%\^&\*;{}=_`~()]/g,"").replace(/\s{2,}/g," ");
@@ -65,6 +71,7 @@
                     el.className="wordContainer"
                     el.style.backgroundColor = `lime`
                     let shows = calculateShows(item);
+                    let density = (bible[item.toLowerCase()].total / maxValue) * 100;
                     el.innerHTML = `
                 <div class="wordContainer tooltip">
                     <span class="tooltiptext">
@@ -72,6 +79,10 @@
                         ${
                             showInline(shows)
                         }
+                        <br>
+                        <p style="font-size: 11pt; margin-top: 0px;">
+                            This word has a density of ${density === 100 ? "100%, making it the most dense word in the bible!" : `${density}%`}
+                        </p>
                     </span>
                     <div class="wordInside tooltip">
                         ${item}<br/>
