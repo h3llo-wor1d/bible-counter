@@ -3,9 +3,12 @@
     <title>Does It Appear In The Bible?</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="words.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.2.1/chart.min.js" integrity="sha512-v3ygConQmvH0QehvQa6gSvTE2VdBZ6wkLOlmK7Mcy2mZ0ZF9saNbbk19QeaoTHdWIEiTlWmrwAL4hS8ElnGFbA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="bible.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script>
+        
+        const bible = window.bible;
 
         function handleText() {
             let value = document.getElementById("textArea").value
@@ -13,12 +16,47 @@
                 document.getElementById("doesItAppear").innerHTML = ""
             }
         }
+
+        function calcValue(o, n){
+            var keys = Object.keys(o);
+            keys.sort(function(a,b){
+                return o[b] - o[a];
+            })
+            let sliced = keys.slice(0,n);
+            let out = [];
+            for (var val of sliced) {
+                out.push([val, o[val]]);
+            }
+            return out;
+        }
+
+        function calculateShows(word) {
+            try {
+                let dens = bible[word.toLowerCase()].density;
+                let calc = calcValue(dens, 3);
+                return calc;
+            } catch {
+                return null;
+            }
+        }
+
+        function round(num, places) {
+            var multiplier = Math.pow(10, places);
+            return Math.round(num * multiplier) / multiplier;
+        }
+        
+        const showInline = (shows) => {
+            let out = ""
+            for (var show of shows) {
+                out += (`<span>${show[0]} - appears ${show[1]} times.</span><br>`);
+            }
+            return out;
+        }
+
         function doesAppear() {
             document.getElementById("doesItAppear").innerHTML = ""
-            bible = window.bible;
-            let value = document.getElementById("textArea").value.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").replace(/\s{2,}/g," ");
+            let value = document.getElementById("textArea").value.replace(/[.,\/#!$%\^&\*;{}=_`~()]/g,"").replace(/\s{2,}/g," ");
             let bibleWords = Object.keys(bible);
-            console.log(bibleWords)
             let i = 0;
             for (var item of value.split(" ")) {
                 if (bibleWords.indexOf(item.toLowerCase()) !== -1) {
@@ -26,14 +64,22 @@
                     var el = document.createElement('div');
                     el.className="wordContainer"
                     el.style.backgroundColor = `lime`
+                    let shows = calculateShows(item);
                     el.innerHTML = `
-                <div class="wordContainer">
-                    <div class="wordInside">
+                <div class="wordContainer tooltip">
+                    <span class="tooltiptext">
+                        Most prominent verses:<br>
+                        ${
+                            showInline(shows)
+                        }
+                    </span>
+                    <div class="wordInside tooltip">
                         ${item}<br/>
                         <p>Appears: ${bible[item.toLowerCase()].total} times</p>
                     </div>
                 </div>`
                     document.getElementById("doesItAppear").appendChild(el)
+                    
                 } 
                 else {
                     var el = document.createElement('div');
@@ -50,14 +96,16 @@
                 }
             }
             document.getElementById("stats").innerHTML = i === 0 ? 
-            "No word(s) or Phrase(s) found" : 
-            `Around ${Math.floor((i / value.split(" ").length) * 100)}% of these words show up in the bible!`
+            "No specified word(s) or phrase(s) found in the bible" : 
+            `${Math.floor((i / value.split(" ").length) * 100)}% of these words show up in the bible!
+<p style="font-size: 14pt; margin-top: 0px;">(Which take up around ${(i / bibleWords.length) * 100}% of the entire bible)</p>    
+            `
 
         }
     </script>
 </head>
 <body>
-    <div class="bodyContent">
+    <div class="bodyContent noselect">
         Does it appear in the bible?<br/>
         A goofy project by <a href="https://twitter.com/h31lo_wor1d">Wrench</a><br/><br/>
         
@@ -69,7 +117,7 @@
         
         <br/>
         <div id="stats"></div>
-        <br/><br/>
+        <br/>
         <div id="doesItAppear" class="doesWordAppear" />
     </div>
 </body>

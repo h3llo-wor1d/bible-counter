@@ -72,3 +72,43 @@ button {
     border-radius: 15px;
     background-color: white;
 }
+  /* Tooltip text */
+  .tooltip .tooltiptext {
+    margin-top: -120px;  
+    visibility: hidden;
+    width: 300px;
+    height: 100px; 
+    background-color: black;
+    color: #fff;
+    text-align: left;
+    
+    padding: 5px;
+    border-radius: 6px;
+    
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1;
+    opacity: .9;
+  }
+
+  .tooltiptext {
+    padding-right: 10px;
+    padding-left: 4px;
+    font-size: 16pt;
+   
+  }
+  
+  /* Show the tooltip text when you mouse over the tooltip container */
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+  }
+
+  .noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+       -khtml-user-select: none; /* Konqueror HTML */
+         -moz-user-select: none; /* Old versions of Firefox */
+          -ms-user-select: none; /* Internet Explorer/Edge */
+              user-select: none; /* Non-prefixed version, currently
+                                    supported by Chrome, Edge, Opera and Firefox */
+  }
