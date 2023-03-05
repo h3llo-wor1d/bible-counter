@@ -5,6 +5,38 @@ function handleText() {
     }
 }
 
+function genColors(l) {
+    return paletteGenerator.generate(
+        l, // Colors
+        function(color){ // This function filters valid colors
+        var hcl = color.hcl();
+        return hcl[0]>=0 && hcl[0]<=360
+            && hcl[1]>=40 && hcl[1]<=70
+            && hcl[2]>=15 && hcl[2]<=85;
+        },
+        false, // Using Force Vector instead of k-Means
+        50, // Steps (quality)
+        false, // Ultra precision
+        'Compromise' // Color distance type (colorblindness)
+    );
+}
+
+function fixData(labels, values) {
+    const l = Object.keys(window.currentStat).length;
+    const sortedArr = [...values].sort((a,b) => b - a);
+    const topValues = sortedArr.slice(0, (l < 5 ? l : 6));
+    let rvalues = [];
+    let rlabels = [];
+    for (let i = 0; i < topValues.length; i++) {
+        let index = values.indexOf(topValues[i]);
+        if (!rlabels.includes(labels[index])) {
+            rvalues.push(values[index]);
+            rlabels.push(labels[index]);
+        }
+    }
+    return [rlabels, rvalues]
+}
+
 function calcValue(o, n){
     var keys = Object.keys(o);
     keys.sort(function(a,b){

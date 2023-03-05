@@ -4,6 +4,8 @@
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="words.css" />
     <link rel="stylesheet" href="nav.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js"></script>
+    <script src="chroma.palette-gen.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     <script src="verses.js"></script>
     <script src="scripts/nav.js"></script>
@@ -21,6 +23,7 @@
         window.currentStat = {};
 
         function tryGetLast() {
+            localStorage.setItem("lastSetGraph", "");
             let last = localStorage.getItem("lastSetPhrase");
             if (last) {
                 doesAppear(last);
@@ -85,12 +88,16 @@
         </span>
         <span class="invisible" id="page2">
             <div class="pageContainer">
-                Coming soon...
-                <!--<canvas id="charts" style="width:100%;max-width:600px"></canvas>-->
+                <div id="chartContainer">
+                    <canvas id="chart" style="width:100%;max-width:600px"></canvas>
+                </div>
+                
             </div>
             
         </span>
+        <div class="margin"></div>
     </div>
+    
     <div class="nav noselect">
         <div class="navText">
             <span class="nactive" onclick="handleNav(this, 'words')">View Words</span>

@@ -10,7 +10,11 @@ function handleNav(el, type) {
         case "stat":
             document.getElementById("page2").className="visible";
             document.getElementById("page1").className="invisible";
-            genCharts();
+            if (localStorage.getItem("lastSetPhrase") !== localStorage.getItem("lastSetGraph")) {
+                console.log('recalculating graph...')
+                localStorage.setItem("lastSetGraph", localStorage.getItem("lastSetPhrase"));
+                genCharts();
+            }
             break;
         case "words":
             document.getElementById("page2").className="invisible";

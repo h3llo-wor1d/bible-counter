@@ -21,6 +21,10 @@ body {
     z-index: -11;
 }
 
+.margin {
+    margin-bottom: 90px;
+}
+
 .doesWordAppear {
     display: flex;
     flex-direction: row;
@@ -43,6 +47,7 @@ body {
 @media only screen and (max-width: 700px) {
     .doesWordAppear {
         width: calc(100vw - 60px);
+        justify-content: center;
     }
 
     .pageContainer {
@@ -54,6 +59,14 @@ body {
         flex-direction: row;
         column-gap: 10px;
         max-width: calc(100vw - 60px);
+    }
+
+    .tooltip .tooltiptext {
+        display: none;
+    }
+
+    .tooltip:hover .tooltiptext {
+        display: none;
     }
 }
 
@@ -70,7 +83,36 @@ input {
 
 button {
     width: 200px;
-    height: 55px;
+    height: 59.8px;
+    font-family: "main";
+    border: white solid 3px;
+    border-radius: 2px;
+    font-size: 100%;
+    background-color: transparent;
+    color: white;
+}
+
+textarea {
+    font-family: "main";
+    background-color: transparent;
+    border: white solid 3px;
+    border-radius: 2px;
+    font-size: 20px;
+    color: white;
+}
+
+textarea:active {
+    border-radius: 2px;
+    border: white solid 3px;
+}
+
+button:hover {
+    background-color: grey;
+}
+
+button:active {
+    background-color: grey;
+    opacity: .75;
 }
 
 .statCircle {
